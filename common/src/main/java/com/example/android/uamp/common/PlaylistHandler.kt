@@ -38,8 +38,8 @@ class PlaylistHandler(context: Context) {
     private fun writeToJson(context: Context){
         val filename = "playlistJson"
         val fileContents = "{\"playlists\": [{\"name\": \"playlist-1\",\"songs\": [{\"route\": \"/storage/emulated/0/Download/09-imagine_dragons-thunder.mp3\"},{\"route\": \"route2\"}]}]}"
-//        context.openFileOutput(filename, Context.MODE_PRIVATE).use {
-//            it.write(fileContents.toByteArray())
-//        }
+        context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+            it.write(fileContents.toByteArray())
+        }
 }
 }

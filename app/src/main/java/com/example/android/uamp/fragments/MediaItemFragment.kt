@@ -33,7 +33,6 @@ import com.example.android.uamp.viewmodels.MainActivityViewModel
 import com.example.android.uamp.viewmodels.MediaItemFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_mediaitem_list.list
 import kotlinx.android.synthetic.main.fragment_mediaitem_list.loadingSpinner
-import kotlinx.android.synthetic.main.fragment_mediaitem_list.networkError
 
 /**
  * A fragment representing a list of MediaItems.
@@ -84,10 +83,6 @@ class MediaItemFragment : Fragment() {
                 loadingSpinner.visibility =
                     if (list?.isNotEmpty() == true) View.GONE else View.VISIBLE
                 listAdapter.submitList(list)
-            })
-        mediaItemFragmentViewModel.networkError.observe(this,
-            Observer<Boolean> { error ->
-                networkError.visibility = if (error) View.VISIBLE else View.GONE
             })
 
         // Set the adapter

@@ -153,7 +153,6 @@ open class MusicService : MediaBrowserServiceCompat() {
 
         // The media library is built from a remote JSON file. We'll create the source here,
         // and then use a suspend function to perform the download off the main thread.
-
         //mediaSource = JsonSource(context = this, source = remoteJsonSource)
 
         mediaSource = LocalMusicSource(this)

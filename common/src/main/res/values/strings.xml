@@ -42,6 +42,7 @@
     <string name="albums_title">Albums</string>
     <string name="artists_title">Artists</string>
     <string name="playlists_title">Playlists</string>
+    <string name="songs_title">Songs</string>
 
     <string name="playlistJson">playlistJson</string>
 </resources>

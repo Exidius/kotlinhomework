@@ -17,17 +17,14 @@
 package com.example.android.uamp.media.library
 
 import android.content.Context
-import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
-import android.util.Log
 import com.example.android.uamp.media.MusicService
 import com.example.android.uamp.media.R
 import com.example.android.uamp.media.extensions.*
 import com.google.gson.Gson
 import java.io.*
-import java.util.function.UnaryOperator
 
 /**
  * Represents a tree of media that's used by [MusicService.onLoadChildren].
@@ -56,6 +53,14 @@ class BrowseTree(context: Context, musicSource: MusicSource) {
 
     private var json = File(context.filesDir, "playlistJson")
 
+//    private fun writeToJson(context: Context){
+//        val filename = "playlistJson"
+//        val fileContents = "{\"playlists\": [{\"name\": \"playlist-1\",\"songs\": [{\"route\": \"/storage/emulated/0/Download/09-imagine_dragons-thunder.mp3\"},{\"route\": \"route2\"}]}]}"
+//        context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+//            it.write(fileContents.toByteArray())
+//        }
+//    }
+
     /**
      * Whether to allow clients which are unknown (non-whitelisted) to use search on this
      * [BrowseTree].
@@ -69,6 +74,10 @@ class BrowseTree(context: Context, musicSource: MusicSource) {
      * (See [BrowseTree.buildAlbumRoot] for more details.)
      */
     init {
+
+        //writeToJson(context)
+
+
         val rootList = mediaIdToChildren[UAMP_BROWSABLE_ROOT] ?: mutableListOf()
 
         val recommendedMetadata = MediaMetadataCompat.Builder().apply {
@@ -103,14 +112,25 @@ class BrowseTree(context: Context, musicSource: MusicSource) {
             flag = MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         }.build()
 
+        val songsMetadata = MediaMetadataCompat.Builder().apply {
+            id = UAMP_SONGS_ROOT
+            title = context.getString(R.string.songs_title)
+            albumArtUri = RESOURCE_ROOT_URI +
+                    context.resources.getResourceEntryName(R.drawable.ic_album)
+            flag = MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+        }.build()
+
         rootList += recommendedMetadata
+        rootList += playlistsMetadata
         rootList += albumsMetadata
         rootList += artistsMetadata
-        rootList += playlistsMetadata
+        rootList += songsMetadata
         mediaIdToChildren[UAMP_BROWSABLE_ROOT] = rootList
         mediaIdToChildren[UAMP_PLAYLISTS_ROOT] = buildPlaylistsRoot(musicSource)
 
         musicSource.forEach { mediaItem ->
+            val songsChildren = mediaIdToChildren[UAMP_SONGS_ROOT] ?: buildAlbumRoot(mediaItem)
+            songsChildren += mediaItem
             val albumMediaId = mediaItem.album.urlEncoded
             val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(mediaItem)
             albumChildren += mediaItem
@@ -220,6 +240,7 @@ const val UAMP_RECOMMENDED_ROOT = "__RECOMMENDED__"
 const val UAMP_ALBUMS_ROOT = "__ALBUMS__"
 const val UAMP_ARTISTS_ROOT = "__ARTISTS__"
 const val UAMP_PLAYLISTS_ROOT = "__PLAYLISTS__"
+const val UAMP_SONGS_ROOT = "__SONGS__"
 
 const val MEDIA_SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED"
 
